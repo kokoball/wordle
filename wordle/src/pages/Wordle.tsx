@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import axios from 'axios';
 import Board from '@/components/Board/Board';
 import Keyboard from '@/components/Keyboard/Keyboard';
 import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
+import { useParams } from 'react-router-dom';
+import { decrypt } from '@/lib/utils';
 
 const App: React.FC = () => {
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -10,7 +12,9 @@ const App: React.FC = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [usedChars, setUsedChars] = useState<{ [key: string]: string }>({});
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const solution = 'REACT';
+
+  const params = useParams<{ word: string }>();
+  const solution = decrypt(params.word)?.toUpperCase() || 'WORLD';
 
   const onEnter = async () => {
     if (currentGuess.length !== 5) return;

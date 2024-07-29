@@ -15,6 +15,7 @@ import axios from 'axios';
 import { DICTIONARY_API } from '@/lib/consts';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
+import { encrypt } from '@/lib/utils';
 
 export default function CardWithForm({
   handleCloseCard,
@@ -32,7 +33,7 @@ export default function CardWithForm({
     try {
       const response = await axios.get(DICTIONARY_API + value);
       if (response.status === 200) {
-        navigate(`/wordle/${value}`);
+        navigate(`/wordle/${encrypt(value)}`);
       }
     } catch (error) {
       toast({
