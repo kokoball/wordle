@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { ANSWER_STATUS } from '@/lib/consts';
 
 export const KeyContainer = styled.div<{ status?: string }>`
-  width: 43px;
+  padding: 0 10px;
+  min-width: 43px;
   height: 58px;
   border-radius: 4px;
   background-color: ${({ status }) => {

@@ -26,7 +26,10 @@ export const Cell = styled.div<{ status?: string }>`
     if (status === ANSWER_STATUS.CORRECT) return '#538d4e';
     if (status === ANSWER_STATUS.PRESENT) return '#b59f3b';
     if (status === ANSWER_STATUS.ABSENT) return '#3a3a3c';
-    return '#d3d6da';
+    return 'white';
   }};
-  color: #ffffff;
+  color: ${({ status }) => {
+    if (!status) return 'black';
+    if (Object.values(ANSWER_STATUS).includes(status)) return 'white';
+  }};
 `;

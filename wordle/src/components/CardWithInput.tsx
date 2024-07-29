@@ -17,11 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { encrypt } from '@/lib/utils';
 
-export default function CardWithForm({
-  handleCloseCard,
-}: {
-  handleCloseCard: () => void;
-}) {
+const CardWithForm = ({ handleCloseCard }: { handleCloseCard: () => void }) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -92,4 +88,6 @@ export default function CardWithForm({
       </CardFooter>
     </Card>
   );
-}
+};
+
+export default CardWithForm;

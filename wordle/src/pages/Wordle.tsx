@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Board from '@/components/Board/Board';
-import Keyboard from '@/components/Keyboard/Keyboard';
+import styled from 'styled-components';
+
+import { Board, Keyboard, Spacing } from '@/components';
 import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { clearWordleStorage, decrypt, formatTime } from '@/lib/utils';
@@ -16,6 +17,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+
+const Wrapper = styled.div`
+  position: relative;
+  color: #000;
+  max-width: 100%;
+  width: 100%;
+  overflow-y: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
 const Wordle = () => {
   const [guesses, setGuesses] = useState<string[]>([]);
@@ -136,19 +150,20 @@ const Wordle = () => {
 
   return (
     <>
-      <div>
+      <Wrapper>
         <Board
           guesses={guesses}
           currentGuess={currentGuess}
           solution={solution}
         />
+        <Spacing size={50} />
         <Keyboard
           onChar={onChar}
           onEnter={onEnter}
           onBackspace={onBackspace}
           usedChars={usedChars}
         />
-      </div>
+      </Wrapper>
       {isGameOver && (
         <Dialog defaultOpen={true}>
           <DialogContent
