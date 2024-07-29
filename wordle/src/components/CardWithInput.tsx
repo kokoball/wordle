@@ -37,7 +37,7 @@ export default function CardWithForm({
       }
     } catch (error) {
       toast({
-        title: '시작할 수 없는 워들입니다.',
+        title: '단어를 찾을 수 없습니다.',
         description: '옳바른 워들을 입력해 주세요.',
       });
       setValue('');
@@ -45,6 +45,10 @@ export default function CardWithForm({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      setValue('');
+      return;
+    }
     const regex = /^[a-zA-Z]+$/;
     if (regex.test(e.target.value)) {
       setValue(e.target.value);

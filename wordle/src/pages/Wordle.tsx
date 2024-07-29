@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Board from '@/components/Board/Board';
 import Keyboard from '@/components/Keyboard/Keyboard';
 import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
 import { useParams } from 'react-router-dom';
 import { decrypt } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 const Wordle = () => {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [usedChars, setUsedChars] = useState<{ [key: string]: string }>({});
-  const [errorMessage, setErrorMessage] = useState<string>('');
 
+  const { toast } = useToast();
   const params = useParams<{ word: string }>();
   const solution = decrypt(params.word)?.toUpperCase() || 'WORLD';
 
@@ -45,7 +46,6 @@ const Wordle = () => {
           setIsGameOver(true);
         }
 
-        setErrorMessage('');
         localStorage.setItem(
           'wordle-guesses',
           JSON.stringify([...guesses, currentGuess])
@@ -53,7 +53,10 @@ const Wordle = () => {
         localStorage.setItem('wordle-usedChars', JSON.stringify(usedChars));
       }
     } catch (error) {
-      setErrorMessage('Not a valid word');
+      toast({
+        title: '단어를 찾을 수 없습니다.',
+        description: '옳바른 워들을 입력해 주세요.',
+      });
       setCurrentGuess('');
     }
   };
@@ -90,7 +93,6 @@ const Wordle = () => {
           onBackspace={onBackspace}
           usedChars={usedChars}
         />
-        {errorMessage && <div>{errorMessage}</div>}
         {isGameOver && (
           <div>
             {guesses[guesses.length - 1] === solution

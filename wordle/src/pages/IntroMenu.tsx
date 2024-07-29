@@ -35,6 +35,11 @@ const IntroMenu = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const navigate = useNavigate();
 
+  const clearLocalStorage = () => {
+    localStorage.setItem('wordle-guesses', JSON.stringify([]));
+    localStorage.setItem('wordle-usedChars', JSON.stringify([]));
+  };
+
   return (
     <Wrapper>
       <div className="welcome-module">
@@ -43,14 +48,20 @@ const IntroMenu = () => {
           <Button
             variant="outline"
             size={'lg'}
-            onClick={() => navigate('/wordle/wordle')}
+            onClick={() => {
+              clearLocalStorage();
+              navigate('/wordle/wordle');
+            }}
           >
             시작하기
           </Button>
           <Button
             variant="outline"
             size={'lg'}
-            onClick={() => setIsCardOpen(true)}
+            onClick={() => {
+              clearLocalStorage();
+              setIsCardOpen(true);
+            }}
           >
             워들 생성하기
           </Button>
