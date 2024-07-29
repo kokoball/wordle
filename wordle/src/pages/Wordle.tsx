@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Board from '@/components/Board/Board';
 import Keyboard from '@/components/Keyboard/Keyboard';
@@ -6,7 +6,7 @@ import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
 import { useParams } from 'react-router-dom';
 import { decrypt } from '@/lib/utils';
 
-const App: React.FC = () => {
+const Wordle = () => {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
@@ -46,6 +46,11 @@ const App: React.FC = () => {
         }
 
         setErrorMessage('');
+        localStorage.setItem(
+          'wordle-guesses',
+          JSON.stringify([...guesses, currentGuess])
+        );
+        localStorage.setItem('wordle-usedChars', JSON.stringify(usedChars));
       }
     } catch (error) {
       setErrorMessage('Not a valid word');
@@ -62,6 +67,14 @@ const App: React.FC = () => {
       setCurrentGuess(currentGuess + char);
     }
   };
+
+  useEffect(() => {
+    const savedGuesses = localStorage.getItem('wordle-guesses');
+    const savedUsedChars = localStorage.getItem('wordle-usedChars');
+
+    if (savedGuesses) setGuesses(JSON.parse(savedGuesses));
+    if (savedUsedChars) setUsedChars(JSON.parse(savedUsedChars));
+  }, []);
 
   return (
     <>
@@ -90,4 +103,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Wordle;
