@@ -148,6 +148,20 @@ const Wordle = () => {
     setStartTime(Date.now());
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') onEnter();
+      if (e.key === 'Backspace') onBackspace();
+      if (/^[a-zA-Z]$/.test(e.key)) onChar(e.key.toUpperCase());
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentGuess]);
+
   return (
     <>
       <Wrapper>
@@ -173,18 +187,19 @@ const Wordle = () => {
           >
             <DialogHeader>
               <DialogTitle>게임 종료!</DialogTitle>
+              <Spacing size={10} />
               <DialogDescription>
-                <ul>
-                  <li>이번 게임 플레이 시간 : {checkTotalTime()}</li>
-                  <li>승리 횟수 : {gameData.win}</li>
-                  <li>
-                    승률 :{' '}
-                    {gameData.total === 0
-                      ? '0%'
-                      : Math.floor((gameData.win / gameData.total) * 100) + '%'}
-                  </li>
-                  <li>시도 횟수 : {gameData.total}</li>
-                </ul>
+                이번 게임 플레이 시간 : {checkTotalTime()}
+              </DialogDescription>
+              <DialogDescription>승리 횟수 : {gameData.win}</DialogDescription>
+              <DialogDescription>
+                승률 :{' '}
+                {gameData.total === 0
+                  ? '0%'
+                  : Math.floor((gameData.win / gameData.total) * 100) + '%'}
+              </DialogDescription>
+              <DialogDescription>
+                시도 횟수 : {gameData.total}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="sm:justify-end">
