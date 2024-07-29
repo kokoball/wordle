@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { WORDLE_STORAGE } from './consts';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,6 +47,6 @@ export function formatTime(seconds: number): string {
 }
 
 export const clearWordleStorage = () => {
-  localStorage.setItem('wordle-guesses', JSON.stringify([]));
-  localStorage.setItem('wordle-usedChars', JSON.stringify([]));
+  localStorage.setItem(WORDLE_STORAGE.guesses, JSON.stringify([]));
+  localStorage.setItem(WORDLE_STORAGE.usedChars, JSON.stringify([]));
 };

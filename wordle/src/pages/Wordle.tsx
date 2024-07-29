@@ -3,7 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 import { Board, Keyboard, Spacing } from '@/components';
-import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
+import { ANSWER_STATUS, DICTIONARY_API, WORDLE_STORAGE } from '@/lib/consts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { clearWordleStorage, decrypt, formatTime } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
@@ -72,11 +72,17 @@ const Wordle = () => {
 
         setUsedChars(updatedChars);
 
-        localStorage.setItem('wordle-guesses', JSON.stringify(guessesArr));
-        localStorage.setItem('wordle-usedChars', JSON.stringify(usedChars));
+        localStorage.setItem(
+          WORDLE_STORAGE.guesses,
+          JSON.stringify(guessesArr)
+        );
+        localStorage.setItem(
+          WORDLE_STORAGE.usedChars,
+          JSON.stringify(usedChars)
+        );
 
         if (currentGuess === solution || guessesArr.length === 6) {
-          const data = localStorage.getItem('wordle-data');
+          const data = localStorage.getItem(WORDLE_STORAGE.data);
           if (data !== null) {
             const parsedData = JSON.parse(data)[0];
             const win =
@@ -87,7 +93,7 @@ const Wordle = () => {
             setGameData({ win, total, winRate });
 
             localStorage.setItem(
-              'wordle-data',
+              WORDLE_STORAGE.data,
               JSON.stringify([{ win, total, winRate }])
             );
           }
@@ -125,9 +131,9 @@ const Wordle = () => {
   };
 
   useEffect(() => {
-    const savedGuesses = localStorage.getItem('wordle-guesses');
-    const savedUsedChars = localStorage.getItem('wordle-usedChars');
-    const savedData = localStorage.getItem('wordle-data');
+    const savedGuesses = localStorage.getItem(WORDLE_STORAGE.guesses);
+    const savedUsedChars = localStorage.getItem(WORDLE_STORAGE.usedChars);
+    const savedData = localStorage.getItem(WORDLE_STORAGE.data);
 
     if (savedGuesses) setGuesses(JSON.parse(savedGuesses));
     if (savedUsedChars) setUsedChars(JSON.parse(savedUsedChars));

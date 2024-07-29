@@ -12,3 +12,9 @@ export const KEYS = [
 
 export const DICTIONARY_API =
   'https://api.dictionaryapi.dev/api/v2/entries/en/';
+
+export const WORDLE_STORAGE = {
+  guesses: 'wordle-guesses',
+  usedChars: 'wordle-usedChars',
+  data: 'wordle-data',
+};
