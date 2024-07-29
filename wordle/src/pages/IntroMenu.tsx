@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
 import styled from 'styled-components';
 import CardWithForm from '@/components/CardWithInput';
+import { encrypt } from '@/lib/utils';
 
 const Wrapper = styled.div`
   position: relative;
@@ -50,7 +51,7 @@ const IntroMenu = () => {
             size={'lg'}
             onClick={() => {
               clearLocalStorage();
-              navigate('/wordle/wordle');
+              navigate(`/wordle/${encrypt('WORLD')}`);
             }}
           >
             시작하기

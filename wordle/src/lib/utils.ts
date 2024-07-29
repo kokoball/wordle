@@ -38,3 +38,9 @@ export function decrypt(text: string | undefined, shift = 3) {
     .map((char: string) => shiftChar(char, -shift))
     .join('');
 }
+
+export function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+}

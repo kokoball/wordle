@@ -3,16 +3,33 @@ import axios from 'axios';
 import Board from '@/components/Board/Board';
 import Keyboard from '@/components/Keyboard/Keyboard';
 import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
-import { useParams } from 'react-router-dom';
-import { decrypt } from '@/lib/utils';
+import { useNavigate, useParams } from 'react-router-dom';
+import { decrypt, formatTime } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const Wordle = () => {
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [usedChars, setUsedChars] = useState<{ [key: string]: string }>({});
+  const [startTime, setStartTime] = useState<number>(0);
+  const [gameData, setGameData] = useState<{
+    win: number;
+    total: number;
+    winRate: number;
+  }>({ win: 0, total: 0, winRate: 0 });
 
+  const navigate = useNavigate();
   const { toast } = useToast();
   const params = useParams<{ word: string }>();
   const solution = decrypt(params.word)?.toUpperCase() || 'WORLD';
@@ -23,7 +40,8 @@ const Wordle = () => {
     try {
       const response = await axios.get(DICTIONARY_API + currentGuess);
       if (response.status === 200) {
-        setGuesses([...guesses, currentGuess]);
+        const guessesArr = [...guesses, currentGuess];
+        setGuesses(guessesArr);
         setCurrentGuess('');
 
         const updatedChars = { ...usedChars };
@@ -40,17 +58,28 @@ const Wordle = () => {
 
         setUsedChars(updatedChars);
 
-        if (currentGuess === solution) {
-          setIsGameOver(true);
-        } else if (guesses.length + 1 === 6) {
+        localStorage.setItem('wordle-guesses', JSON.stringify(guessesArr));
+        localStorage.setItem('wordle-usedChars', JSON.stringify(usedChars));
+
+        if (currentGuess === solution || guessesArr.length === 1) {
+          const data = localStorage.getItem('wordle-data');
+          if (data !== null) {
+            const parsedData = JSON.parse(data)[0];
+            const win =
+              currentGuess === solution ? parsedData.win + 1 : parsedData.win;
+            const total = parsedData.total + 1;
+            const winRate = Math.floor((win / total) * 100);
+
+            setGameData({ win, total, winRate });
+
+            localStorage.setItem(
+              'wordle-data',
+              JSON.stringify([{ win, total, winRate }])
+            );
+          }
+
           setIsGameOver(true);
         }
-
-        localStorage.setItem(
-          'wordle-guesses',
-          JSON.stringify([...guesses, currentGuess])
-        );
-        localStorage.setItem('wordle-usedChars', JSON.stringify(usedChars));
       }
     } catch (error) {
       toast({
@@ -71,13 +100,43 @@ const Wordle = () => {
     }
   };
 
+  const avoidDefaultDomBehavior = (e: Event) => {
+    e.preventDefault();
+  };
+
+  const checkTotalTime = () => {
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    return formatTime(elapsed);
+  };
+
   useEffect(() => {
     const savedGuesses = localStorage.getItem('wordle-guesses');
     const savedUsedChars = localStorage.getItem('wordle-usedChars');
+    const savedData = localStorage.getItem('wordle-data');
 
     if (savedGuesses) setGuesses(JSON.parse(savedGuesses));
     if (savedUsedChars) setUsedChars(JSON.parse(savedUsedChars));
+    if (!savedData) {
+      localStorage.setItem(
+        'wordle-data',
+        JSON.stringify([{ win: 0, total: 0, winRate: 0 }])
+      );
+    }
+
+    if (
+      currentGuess === solution ||
+      (savedGuesses !== null && JSON.parse(savedGuesses).length === 6)
+    ) {
+      setIsGameOver(true);
+    }
+
+    setStartTime(Date.now());
   }, []);
+
+  useEffect(() => {
+    console.log(gameData, 12345);
+  }, [gameData]);
 
   return (
     <>
@@ -93,14 +152,44 @@ const Wordle = () => {
           onBackspace={onBackspace}
           usedChars={usedChars}
         />
-        {isGameOver && (
-          <div>
-            {guesses[guesses.length - 1] === solution
-              ? 'Congratulations! You won!'
-              : `Game Over! The word was ${solution}.`}
-          </div>
-        )}
       </div>
+      {isGameOver && (
+        <Dialog defaultOpen={true}>
+          <DialogContent
+            className="sm:max-w-md"
+            onPointerDownOutside={avoidDefaultDomBehavior}
+            onInteractOutside={avoidDefaultDomBehavior}
+          >
+            <DialogHeader>
+              <DialogTitle>게임 종료!</DialogTitle>
+              <DialogDescription>
+                <ul>
+                  <li>이번 게임 플레이 시간 : {checkTotalTime()}</li>
+                  <li>승리 횟수 : {gameData.win}</li>
+                  <li>
+                    승률 :{' '}
+                    {gameData.total === 0
+                      ? '0%'
+                      : gameData.win / gameData.total + '%'}
+                  </li>
+                  <li>시도 횟수 : {gameData.total}</li>
+                </ul>
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="sm:justify-end">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => navigate(`/wordle`)}
+                >
+                  처음으로
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
