@@ -23,6 +23,7 @@ export default function CardWithForm({
   handleCloseCard: () => void;
 }) {
   const [value, setValue] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -45,13 +46,20 @@ export default function CardWithForm({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
-      setValue('');
-      return;
+    const inputValue = e.target.value;
+    const regex = /^[a-zA-Z]*$/;
+
+    if (inputValue === '' || regex.test(inputValue)) {
+      setValue(inputValue);
+      setError(null);
+    } else {
+      setError('알파벳만 입력할 수 있습니다.');
     }
-    const regex = /^[a-zA-Z]+$/;
-    if (regex.test(e.target.value)) {
-      setValue(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      startGame();
     }
   };
 
@@ -69,8 +77,10 @@ export default function CardWithForm({
               placeholder="예) React"
               value={value}
               onChange={handleChange}
+              onKeyDown={handleKeyPress}
               maxLength={5}
             />
+            {error && <p className="text-red-500">{error}</p>}
           </div>
         </div>
       </CardContent>
