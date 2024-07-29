@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ANSWER_STATUS } from '../../utils/consts';
+import { ANSWER_STATUS } from '@/lib/consts';
 
 export const KeyContainer = styled.div<{ status?: string }>`
   width: 43px;

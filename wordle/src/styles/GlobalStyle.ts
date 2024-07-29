@@ -11,4 +11,9 @@ export const GlobalStyle = createGlobalStyle`
     align-items: center;
     height: 100vh;
   }
+
+  #root {
+    width: 100%;
+    height: 100%;
+  }
 `;

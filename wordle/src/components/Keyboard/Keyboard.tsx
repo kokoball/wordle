@@ -1,6 +1,6 @@
 import React from 'react';
-import Key from '../Key/Key';
-import { KEYS } from '../../utils/consts';
+import { Key } from '@/components';
+import { KEYS } from '@/lib/consts';
 import { KeyboardContainer, Row } from './styled';
 
 interface KeyboardProps {

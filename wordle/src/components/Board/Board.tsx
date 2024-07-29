@@ -1,6 +1,6 @@
 import React from 'react';
 import { BoardContainer, Cell, Row } from './styled';
-import { ANSWER_STATUS } from '../../utils/consts';
+import { ANSWER_STATUS } from '@/lib/consts';
 
 interface BoardProps {
   guesses: string[];
