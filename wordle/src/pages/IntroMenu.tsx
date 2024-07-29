@@ -1,8 +1,9 @@
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
 import styled from 'styled-components';
+import CardWithForm from '@/components/CardWithInput';
 
 const Wrapper = styled.div`
   position: relative;
@@ -30,7 +31,8 @@ const Wrapper = styled.div`
   }
 `;
 
-const IntroMenu: React.FC = () => {
+const IntroMenu = () => {
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -45,10 +47,17 @@ const IntroMenu: React.FC = () => {
           >
             시작하기
           </Button>
-          <Button variant="outline" size={'lg'}>
+          <Button
+            variant="outline"
+            size={'lg'}
+            onClick={() => setIsCardOpen(true)}
+          >
             워들 생성하기
           </Button>
         </div>
+        {isCardOpen && (
+          <CardWithForm handleCloseCard={() => setIsCardOpen(false)} />
+        )}
       </div>
     </Wrapper>
   );
