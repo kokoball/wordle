@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import logo from '@/assets/logo.png';
 import styled from 'styled-components';
 import CardWithForm from '@/components/CardWithInput';
-import { encrypt } from '@/lib/utils';
+import { clearWordleStorage, encrypt } from '@/lib/utils';
 
 const Wrapper = styled.div`
   position: relative;
@@ -36,11 +36,6 @@ const IntroMenu = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const navigate = useNavigate();
 
-  const clearLocalStorage = () => {
-    localStorage.setItem('wordle-guesses', JSON.stringify([]));
-    localStorage.setItem('wordle-usedChars', JSON.stringify([]));
-  };
-
   return (
     <Wrapper>
       <div className="welcome-module">
@@ -50,7 +45,7 @@ const IntroMenu = () => {
             variant="outline"
             size={'lg'}
             onClick={() => {
-              clearLocalStorage();
+              clearWordleStorage();
               navigate(`/wordle/${encrypt('WORLD')}`);
             }}
           >
@@ -60,7 +55,7 @@ const IntroMenu = () => {
             variant="outline"
             size={'lg'}
             onClick={() => {
-              clearLocalStorage();
+              clearWordleStorage();
               setIsCardOpen(true);
             }}
           >

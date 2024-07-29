@@ -44,3 +44,8 @@ export function formatTime(seconds: number): string {
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 }
+
+export const clearWordleStorage = () => {
+  localStorage.setItem('wordle-guesses', JSON.stringify([]));
+  localStorage.setItem('wordle-usedChars', JSON.stringify([]));
+};

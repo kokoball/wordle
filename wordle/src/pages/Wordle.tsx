@@ -4,7 +4,7 @@ import Board from '@/components/Board/Board';
 import Keyboard from '@/components/Keyboard/Keyboard';
 import { ANSWER_STATUS, DICTIONARY_API } from '@/lib/consts';
 import { useNavigate, useParams } from 'react-router-dom';
-import { decrypt, formatTime } from '@/lib/utils';
+import { clearWordleStorage, decrypt, formatTime } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import {
@@ -61,7 +61,7 @@ const Wordle = () => {
         localStorage.setItem('wordle-guesses', JSON.stringify(guessesArr));
         localStorage.setItem('wordle-usedChars', JSON.stringify(usedChars));
 
-        if (currentGuess === solution || guessesArr.length === 1) {
+        if (currentGuess === solution || guessesArr.length === 6) {
           const data = localStorage.getItem('wordle-data');
           if (data !== null) {
             const parsedData = JSON.parse(data)[0];
@@ -134,10 +134,6 @@ const Wordle = () => {
     setStartTime(Date.now());
   }, []);
 
-  useEffect(() => {
-    console.log(gameData, 12345);
-  }, [gameData]);
-
   return (
     <>
       <div>
@@ -170,7 +166,7 @@ const Wordle = () => {
                     승률 :{' '}
                     {gameData.total === 0
                       ? '0%'
-                      : gameData.win / gameData.total + '%'}
+                      : Math.floor((gameData.win / gameData.total) * 100) + '%'}
                   </li>
                   <li>시도 횟수 : {gameData.total}</li>
                 </ul>
@@ -181,7 +177,10 @@ const Wordle = () => {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => navigate(`/wordle`)}
+                  onClick={() => {
+                    clearWordleStorage();
+                    navigate(`/wordle`);
+                  }}
                 >
                   처음으로
                 </Button>
