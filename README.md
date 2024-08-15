@@ -1,4 +1,6 @@
 # wordle
+배포 링크 : https://wordle-seven-blush.vercel.app/
+
 
 ## 기술 스택
 - react / TypeScript (Vite)
